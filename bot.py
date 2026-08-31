@@ -52,7 +52,6 @@ from openai import AsyncOpenAI
 # ============================================================
 
 BOT_VERSION = "v6.1.1"
-PREMIUM_PARAGRAPH_EMOJI = '<tg-emoji emoji-id="5938385748121096724">🔴</tg-emoji>'
 V6_EDITORIAL_ENGINE = True
 V6_LAYOUT_RULE = "1-2 paragraphs; max ~4 display lines per paragraph; sentence-safe"
 # v6.1.1: تیتر بدون محدودیت تعداد کلمه
@@ -2788,7 +2787,7 @@ async def rewrite_news_with_settings(source, facts, length=None, mode=None):
 
 def parse_editable_post(post):
     raw = re.sub(r"<[^>]+>", "", post or "")
-    raw = raw.replace("🔻 ", "")
+    raw = raw.replace("🔻 ", "").replace(PREMIUM_PARAGRAPH_EMOJI, "")
     raw = raw.replace("🆔 @Gamefa_official", "").strip()
     parts = raw.split("\n\n", 1)
     title = parts[0].strip() if parts else ""
@@ -2800,6 +2799,9 @@ def parse_editable_post(post):
 # ============================================================
 # V6.0.0 PARAGRAPH LAYOUT ENGINE
 # ============================================================
+PREMIUM_PARAGRAPH_EMOJI_ID = "5938385748121096724"
+PREMIUM_PARAGRAPH_EMOJI = f'<tg-emoji emoji-id="{PREMIUM_PARAGRAPH_EMOJI_ID}">🔴</tg-emoji>'
+
 
 V6_MAX_PARAGRAPH_CHARS = int(os.getenv("V6_MAX_PARAGRAPH_CHARS", "330"))
 V6_SHORT_MAX_CHARS = int(os.getenv("V6_SHORT_MAX_CHARS", "330"))
