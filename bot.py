@@ -52,6 +52,7 @@ from openai import AsyncOpenAI
 # ============================================================
 
 BOT_VERSION = "v6.1.1"
+PREMIUM_PARAGRAPH_EMOJI = '<tg-emoji emoji-id="5938385748121096724">🔴</tg-emoji>'
 V6_EDITORIAL_ENGINE = True
 V6_LAYOUT_RULE = "1-2 paragraphs; max ~4 display lines per paragraph; sentence-safe"
 # v6.1.1: تیتر بدون محدودیت تعداد کلمه
@@ -2997,7 +2998,7 @@ def build_custom_post(title, body, source=None, facts=None):
     )
 
     rendered_paragraphs = [
-        "🔻 " + escape_html(p)
+        PREMIUM_PARAGRAPH_EMOJI + " " + escape_html(p)
         for p in body.split("\n\n")
         if p.strip()
     ]
@@ -3692,7 +3693,7 @@ def v56_finalize_post(post, source, facts):
         return ""
 
     rendered = "\n\n".join(
-        "🔻 " + escape_html(p.strip())
+        PREMIUM_PARAGRAPH_EMOJI + " " + escape_html(p.strip())
         for p in body.split("\n\n")
         if p.strip()
     )
