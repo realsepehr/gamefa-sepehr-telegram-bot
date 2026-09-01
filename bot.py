@@ -2788,6 +2788,7 @@ async def rewrite_news_with_settings(source, facts, length=None, mode=None):
 def parse_editable_post(post):
     raw = re.sub(r"<[^>]+>", "", post or "")
     raw = raw.replace("🔻 ", "").replace(PREMIUM_PARAGRAPH_EMOJI, "")
+    raw = re.sub(r"(^|\n\s*\n)\s*(?:🔻|🟣|🔴|🟢|🟡|🟠|⚪|⚫|🔵)+\s*", r"\1", raw)
     raw = raw.replace("🆔 @Gamefa_official", "").strip()
     parts = raw.split("\n\n", 1)
     title = parts[0].strip() if parts else ""
@@ -2980,6 +2981,10 @@ def build_custom_post(title, body, source=None, facts=None):
 
     # تمام newlineهای تصادفی AI قبل از موتور V6 حذف می‌شوند.
     body = re.sub(r"\s*\n\s*", " ", body)
+    # Premium Emoji Fix: remove any AI-generated paragraph marker before
+    # adding the real Telegram Custom Emoji. This prevents duplicate icons
+    # such as "🔴🔴" or "🔻🔴" at the start of a paragraph.
+    body = re.sub(r"(^|\n\s*\n)\s*(?:🔻|🟣|🔴|🟢|🟡|🟠|⚪|⚫|🔵)+\s*", r"\1", body)
     body = v6_build_paragraphs(body, source, facts)
 
     title = re.sub(
