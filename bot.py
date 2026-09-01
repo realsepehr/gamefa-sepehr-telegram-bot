@@ -2787,8 +2787,7 @@ async def rewrite_news_with_settings(source, facts, length=None, mode=None):
 
 def parse_editable_post(post):
     raw = re.sub(r"<[^>]+>", "", post or "")
-    raw = raw.replace("🔻 ", "").replace(PREMIUM_PARAGRAPH_EMOJI, "")
-    raw = re.sub(r"(^|\n\s*\n)\s*(?:🔻|🟣|🔴|🟢|🟡|🟠|⚪|⚫|🔵)+\s*", r"\1", raw)
+    raw = raw.replace("🔻 ", "")
     raw = raw.replace("🆔 @Gamefa_official", "").strip()
     parts = raw.split("\n\n", 1)
     title = parts[0].strip() if parts else ""
@@ -2800,9 +2799,6 @@ def parse_editable_post(post):
 # ============================================================
 # V6.0.0 PARAGRAPH LAYOUT ENGINE
 # ============================================================
-PREMIUM_PARAGRAPH_EMOJI_ID = "5938385748121096724"
-PREMIUM_PARAGRAPH_EMOJI = f'<tg-emoji emoji-id="{PREMIUM_PARAGRAPH_EMOJI_ID}">🔴</tg-emoji>'
-
 
 V6_MAX_PARAGRAPH_CHARS = int(os.getenv("V6_MAX_PARAGRAPH_CHARS", "330"))
 V6_SHORT_MAX_CHARS = int(os.getenv("V6_SHORT_MAX_CHARS", "330"))
@@ -2981,10 +2977,6 @@ def build_custom_post(title, body, source=None, facts=None):
 
     # تمام newlineهای تصادفی AI قبل از موتور V6 حذف می‌شوند.
     body = re.sub(r"\s*\n\s*", " ", body)
-    # Premium Emoji Fix: remove any AI-generated paragraph marker before
-    # adding the real Telegram Custom Emoji. This prevents duplicate icons
-    # such as "🔴🔴" or "🔻🔴" at the start of a paragraph.
-    body = re.sub(r"(^|\n\s*\n)\s*(?:🔻|🟣|🔴|🟢|🟡|🟠|⚪|⚫|🔵)+\s*", r"\1", body)
     body = v6_build_paragraphs(body, source, facts)
 
     title = re.sub(
@@ -3005,7 +2997,7 @@ def build_custom_post(title, body, source=None, facts=None):
     )
 
     rendered_paragraphs = [
-        PREMIUM_PARAGRAPH_EMOJI + " " + escape_html(p)
+        "🔻 " + escape_html(p)
         for p in body.split("\n\n")
         if p.strip()
     ]
@@ -3700,7 +3692,7 @@ def v56_finalize_post(post, source, facts):
         return ""
 
     rendered = "\n\n".join(
-        PREMIUM_PARAGRAPH_EMOJI + " " + escape_html(p.strip())
+        "🔻 " + escape_html(p.strip())
         for p in body.split("\n\n")
         if p.strip()
     )
